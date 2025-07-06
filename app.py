@@ -61,22 +61,13 @@ with ui.layout_columns(gap="2rem"):
                               yaxis_title="Count")
             return fig
 
-    with ui.card():
-        ui.card_header("Seaborn Histogram")
-        @render.plot
-        def seaborn_histogram():
-            df = penguins[penguins["species"].isin(input.selected_species())]
-            plt.figure(figsize=(6, 4))
-            sns.histplot(
-                data=df,
-                x=input.selected_attribute(),
-                bins=input.n_bins(),
-                hue="species",
-                kde=True,
-            )
-            plt.title("Seaborn Histogram")
-            plt.xlabel(input.selected_attribute())
-            plt.ylabel("Count")
+    @render.plot(alt="A Seaborn histogram on penguin body mass in grams.")
+    def seaborn_histogram():
+                histplot = sns.histplot(data=load_penguins, x="body_mass_g", bins=input.seaborn_bin_count() )
+                histplot.set_title("Palmer Penguins")
+                histplot.set_xlabel("Mass (g)")
+                histplot.set_ylabel("Count")
+                return histplot
 
 # scatterplot
 with ui.card(full_screen=True):
