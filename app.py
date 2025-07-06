@@ -1,4 +1,6 @@
 # app.py  ──  run with:  shiny run app.py
+
+from shiny import reactive          # <— add this
 from shiny.express import ui, render, input
 from shinywidgets import render_plotly
 
@@ -95,3 +97,16 @@ with ui.card(full_screen=True):
                           yaxis_title="Body Mass (g)",
                           legend_title="Species")
         return fig
+
+# --------------------------------------------------------
+# Reactive calculations and effects
+# --------------------------------------------------------
+
+# Add a reactive calculation to filter the data
+# By decorating the function with @reactive, we can use the function to filter the data
+# The function will be called whenever an input functions used to generate that output changes.
+# Any output that depends on the reactive function (e.g., filtered_data()) will be updated when the data changes.
+
+@reactive.calc
+def filtered_data():
+    return load_penguins
