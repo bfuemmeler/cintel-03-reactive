@@ -1,6 +1,4 @@
-# app.py  ──  run with:  shiny run app.py
-
-from shiny import reactive          # <— add this
+from shiny import reactive         
 from shiny.express import ui, render, input
 from shinywidgets import render_plotly
 
@@ -75,6 +73,9 @@ with ui.card(full_screen=True):
     @render_plotly
     def plotly_scatterplot():
         df = penguins[penguins["species"].isin(input.selected_species())]
+
+        df = df.dropna(subset=["bill_length_mm", "body_mass_g", input.selected_attribute()])
+
         attr = input.selected_attribute()
         fig = px.scatter(
             df,
@@ -84,9 +85,11 @@ with ui.card(full_screen=True):
             hover_data=["flipper_length_mm", "bill_depth_mm"],
             title=f"{attr} vs Body Mass",
         )
-        fig.update_layout(xaxis_title=attr,
-                          yaxis_title="Body Mass (g)",
-                          legend_title="Species")
+        fig.update_layout(
+            xaxis_title=attr,
+            yaxis_title="Body Mass (g)",
+            legend_title="Species"
+        )
         return fig
 
 # --------------------------------------------------------
